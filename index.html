@@ -21,7 +21,7 @@ const { useState, useRef, useEffect } = React;
 
 const MONICA_PROFILE = `
 PROFILE SUMMARY:
-Software Engineer with a product mindset, 9+ years of experience. Early adopter of AI integrations (OpenAI/RAG at Microsoft Research). Building The Planner App (315+ users, organic growth).
+Software Engineer with a product mindset, 9+ years of experience. Early adopter of AI integrations (OpenAI/RAG at Microsoft Research, late 2022). Building The Planner App (315+ users, organic growth).
 
 CURRENT ROLE:
 Front-end Engineer II at Fetcher (Oct 2023 - Present, Remote)
@@ -178,8 +178,8 @@ function JobAnalyzer() {
         "anthropic-dangerous-direct-browser-access": "true",
       },
       body: JSON.stringify({
-        model: "claude-sonnet-4-6",
-        max_tokens: 1500,
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
         system: SYSTEM_PROMPT,
         messages: allMessages,
       }),
@@ -430,6 +430,14 @@ ${jobText}`;
         const lines = text.split("\n").filter((l) => l.trim());
         if (lines.length < 2) return;
         const headers = parseCsvLine(lines[0]).map((h) => h.trim().toLowerCase());
+        const safeDate = (str) => {
+          if (!str) return new Date().toISOString();
+          const months = { jan:0, feb:1, mar:2, apr:3, may:4, jun:5, jul:6, aug:7, sep:8, oct:9, nov:10, dec:11 };
+          const m = str.match(/(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})/);
+          if (m) return new Date(parseInt(m[3]), months[m[2].toLowerCase()] ?? 0, parseInt(m[1])).toISOString();
+          const d = new Date(str);
+          return isNaN(d.getTime()) ? new Date().toISOString() : d.toISOString();
+        };
         const parsed = [];
         for (let i = 1; i < lines.length; i++) {
           const cols = parseCsvLine(lines[i]);
@@ -441,18 +449,18 @@ ${jobText}`;
           const stageHistory = stageStr
             ? stageStr.split("→").map((s) => {
                 const match = s.trim().match(/^(.+?)\s*\((.+?)\)$/);
-                return match ? { stage: match[1].trim(), date: new Date(match[2]).toISOString() } : null;
+                return match ? { stage: match[1].trim(), date: safeDate(match[2]) } : null;
               }).filter(Boolean)
             : [{ date: new Date().toISOString(), stage: get("applied") === "Yes" ? (get("current stage") || "Applied") : "Skipped" }];
           parsed.push({
             id: Date.now().toString() + i,
-            date: get("date") ? new Date(get("date")).toISOString() : new Date().toISOString(),
+            date: safeDate(get("date")),
             company: get("company") || "Unknown",
             title: get("title") || "Unknown",
             score: get("score") ? parseInt(get("score")) : null,
             url: get("url") || null,
             applied: get("applied") !== "No",
-            analysis: null,
+            analysis: get("analysis") || null,
             stageHistory,
           });
         }
