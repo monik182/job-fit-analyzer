@@ -21,7 +21,7 @@ const { useState, useRef, useEffect } = React;
 
 const MONICA_PROFILE = `
 PROFILE SUMMARY:
-Software Engineer with a product mindset, 9+ years of experience. Early adopter of AI integrations (OpenAI/RAG at Microsoft Research, late 2022). Building The Planner App (315+ users, organic growth).
+Software Engineer with a product mindset, 9+ years of experience. Early adopter of AI integrations (OpenAI/RAG at Microsoft Research). Building The Planner App (315+ users, organic growth).
 
 CURRENT ROLE:
 Front-end Engineer II at Fetcher (Oct 2023 - Present, Remote)
@@ -36,7 +36,7 @@ Tech: TypeScript, React.js, Node.js, Cypress, Jest, GitHub Actions, Storybook, C
 PREVIOUS: Microsoft - Software Engineer (Feb 2021 - Oct 2023)
 - Contributed to 4 open-source projects: ShowWhy, Transparency Engine, DataShaper, Essex Toolkit
 - Built ShowWhy (causal inference tool for data scientists), frontend with React
-- Implemented early OpenAI integrations and RAG-based features (late 2022, before mainstream LLM adoption)
+- Implemented early OpenAI integrations and RAG-based features (before mainstream LLM adoption)
 - Developed backend services with Python and FastAPI for Transparency Engine
 - Team of ~15-20 engineers, data scientists, researchers
 Tech: TypeScript, React.js, Node.js, Recoil.js, Playwright, Jest, Azure DevOps, Python, FastAPI, OpenAI
@@ -178,8 +178,8 @@ function JobAnalyzer() {
         "anthropic-dangerous-direct-browser-access": "true",
       },
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 1000,
+        model: "claude-sonnet-4-6",
+        max_tokens: 1500,
         system: SYSTEM_PROMPT,
         messages: allMessages,
       }),
