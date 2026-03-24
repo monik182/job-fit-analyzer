@@ -378,7 +378,7 @@ ${jobText}`;
       }
       return str;
     };
-    const headers = ["Date", "Company", "Title", "Score", "URL", "Current Stage", "Applied", "Stage History"];
+    const headers = ["Date", "Company", "Title", "Score", "URL", "Current Stage", "Applied", "Stage History", "Analysis"];
     const rows = history.map((h) => [
       formatDate(h.date),
       h.company,
@@ -388,6 +388,7 @@ ${jobText}`;
       getLatestStage(h),
       h.applied ? "Yes" : "No",
       (h.stageHistory || []).map((s) => `${s.stage} (${formatDate(s.date)})`).join(" → "),
+      h.analysis || "",
     ]);
     const csv = [headers, ...rows].map((r) => r.map(escape).join(",")).join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
