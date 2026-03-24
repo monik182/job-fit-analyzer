@@ -21,7 +21,7 @@ const { useState, useRef, useEffect } = React;
 
 const MONICA_PROFILE = `
 PROFILE SUMMARY:
-Software Engineer with a product mindset, 9+ years of experience. Early adopter of AI integrations (OpenAI/RAG at Microsoft Research, late 2022). Building The Planner App (315+ users, organic growth).
+Software Engineer with a product mindset, 9+ years of experience. Early adopter of AI integrations (OpenAI/RAG at Microsoft Research). Building The Planner App (315+ users, organic growth).
 
 CURRENT ROLE:
 Front-end Engineer II at Fetcher (Oct 2023 - Present, Remote)
@@ -178,8 +178,8 @@ function JobAnalyzer() {
         "anthropic-dangerous-direct-browser-access": "true",
       },
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 1000,
+        model: "claude-sonnet-4-6",
+        max_tokens: 1500,
         system: SYSTEM_PROMPT,
         messages: allMessages,
       }),
