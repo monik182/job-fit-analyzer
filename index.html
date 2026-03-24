@@ -36,7 +36,7 @@ Tech: TypeScript, React.js, Node.js, Cypress, Jest, GitHub Actions, Storybook, C
 PREVIOUS: Microsoft - Software Engineer (Feb 2021 - Oct 2023)
 - Contributed to 4 open-source projects: ShowWhy, Transparency Engine, DataShaper, Essex Toolkit
 - Built ShowWhy (causal inference tool for data scientists), frontend with React
-- Implemented early OpenAI integrations and RAG-based features (late 2022, before mainstream LLM adoption)
+- Implemented early OpenAI integrations and RAG-based features (before mainstream LLM adoption)
 - Developed backend services with Python and FastAPI for Transparency Engine
 - Team of ~15-20 engineers, data scientists, researchers
 Tech: TypeScript, React.js, Node.js, Recoil.js, Playwright, Jest, Azure DevOps, Python, FastAPI, OpenAI
@@ -400,6 +400,24 @@ ${jobText}`;
     URL.revokeObjectURL(url);
   };
 
+  const parseCsvRows = (text) => {
+    const rows = [];
+    let current = "";
+    let inQuotes = false;
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      if (ch === '"') { inQuotes = !inQuotes; current += ch; }
+      else if ((ch === '\n' || ch === '\r') && !inQuotes) {
+        if (ch === '\r' && text[i + 1] === '\n') i++;
+        if (current.trim()) rows.push(current);
+        current = "";
+      }
+      else { current += ch; }
+    }
+    if (current.trim()) rows.push(current);
+    return rows;
+  };
+
   const parseCsvLine = (line) => {
     const result = [];
     let current = "";
@@ -427,9 +445,9 @@ ${jobText}`;
     reader.onload = (ev) => {
       try {
         const text = ev.target.result;
-        const lines = text.split("\n").filter((l) => l.trim());
-        if (lines.length < 2) return;
-        const headers = parseCsvLine(lines[0]).map((h) => h.trim().toLowerCase());
+        const rows = parseCsvRows(text);
+        if (rows.length < 2) return;
+        const headers = parseCsvLine(rows[0]).map((h) => h.trim().toLowerCase());
         const safeDate = (str) => {
           if (!str) return new Date().toISOString();
           const months = { jan:0, feb:1, mar:2, apr:3, may:4, jun:5, jul:6, aug:7, sep:8, oct:9, nov:10, dec:11 };
@@ -439,8 +457,8 @@ ${jobText}`;
           return isNaN(d.getTime()) ? new Date().toISOString() : d.toISOString();
         };
         const parsed = [];
-        for (let i = 1; i < lines.length; i++) {
-          const cols = parseCsvLine(lines[i]);
+        for (let i = 1; i < rows.length; i++) {
+          const cols = parseCsvLine(rows[i]);
           const get = (name) => {
             const idx = headers.indexOf(name);
             return idx >= 0 ? cols[idx]?.trim() || "" : "";
